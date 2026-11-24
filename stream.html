@@ -541,8 +541,8 @@ function sceneHTML(id){
     const src = useShot ? (S ? "shot.png?t=" : "/api/shot?t=")+encodeURIComponent(shot.t)
       : fr ? (S ? (liveImg ? "frame.png?t="+encodeURIComponent(fr.t) : null) : "/api/frame?t="+encodeURIComponent(fr.t)) : null;
     const rs = r ? (r.crashed ? ["CRASHED","badc",""] : r.running ? ["RUNNING","okc","run"] : ["IDLE","",""]) : ["—","",""];
-    return `<div class="bench c"><div><div class="shot">${src?`<img src="${src}" alt="">`:`<div class="nf">NO FRAME YET</div>`}${useShot?`<span class="ft">FIRST FRAME ✓ SAVED</span>`:fr?`<span class="ft">${FTAG[fr.kind]||fr.kind}</span>`:""}</div>
-        <div class="fcap">${useShot ? `${esc(shot.name.replace(/\.png$/i,"").replace(/_/g," "))} · saved ${ago(shot.t)}` : fr ? `${esc(fr.name)} · ${fr.w}×${fr.h} · ${ago(fr.t)}` : "waiting for the first captured frame"}</div></div>
+    return `<div class="bench c"><div><div class="shot">${src?`<img src="${src}" alt="">`:`<div class="nf">${B.imagesHidden?"📺 ON THE LIVE STREAM ONLY":"NO FRAME YET"}</div>`}${useShot?`<span class="ft">SAVED SHOT ✓</span>`:fr?`<span class="ft">${FTAG[fr.kind]||fr.kind}</span>`:""}</div>
+        <div class="fcap">${useShot ? `${esc(shot.name.replace(/\.png$/i,"").replace(/_/g," "))} · saved ${ago(shot.t)}` : fr ? `${esc(fr.name)} · ${fr.w}×${fr.h} · ${ago(fr.t)}` : B.imagesHidden ? "game screenshots are shown on the live stream only" : "waiting for the first captured frame"}</div></div>
       <div class="bst">
         <div><div class="k">Latest build</div><div class="v">${b0?`#${b0.n} <span class="${b0.failed?"badc":"okc"}">${b0.failed?"✗":"✓"}</span>`:"—"}</div><div class="s">${b0?`${b0.elapsed??"?"}s · ${ago(b0.t)}`:""}</div></div>
         <div><div class="k">Run state</div><div class="v ${rs[1]}"><span class="rstate ${rs[2]}">${rs[0]}</span></div><div class="s">${r?`started ${ago(r.start)}`:""}</div></div>

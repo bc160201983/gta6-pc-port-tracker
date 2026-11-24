@@ -515,7 +515,7 @@ function renderBuild(){
     if(prev.imgKey !== key) $("frameImg").src = liveImg ? (S ? "frame.png?t=" : "/api/frame?t=")+enc(fr.t) : (S ? "shot.png?t=" : "/api/shot?t=")+enc(shot.t);
     prev.imgKey = key;
     $("noFrame").style.display = "none";
-    $("frameTag").textContent = liveImg ? "REAL FRAME ✓ LIVE" : "FIRST FRAME ✓ SAVED"; $("frameTag").className = "osd br image";
+    $("frameTag").textContent = liveImg ? "REAL FRAME ✓ LIVE" : "SAVED SHOT ✓"; $("frameTag").className = "osd br image";
     $("frameCap").textContent = liveImg ? `${fr.name.replace(/\.bmp$/i,"").replace("_"," ")} · ${FRAME_TXT.image} · ${ago(fr.t)}`
       : `${shot.name.replace(/\.png$/i,"").replace(/_/g," ")} · saved ${ago(shot.t)}${fr ? ` · live run: ${FRAME_TXT[fr.kind]||fr.kind}` : ""}`;
   } else if(fr){
@@ -527,7 +527,8 @@ function renderBuild(){
     $("frameCap").textContent = `${fr.name.replace(/\.bmp$/i,"").replace("_"," ")} · ${FRAME_TXT[fr.kind]||fr.kind} · ${ago(fr.t)}`;
   } else {
     $("frameImg").removeAttribute("src"); $("noFrame").style.display = ""; $("frameTag").textContent = ""; $("frameTag").className = "osd br";
-    $("frameCap").textContent = r?.running ? "waiting for the first captured frame…" : "Latest frame from the game";
+    $("noFrame").textContent = B.imagesHidden ? "📺 ON THE LIVE STREAM ONLY" : "NO SIGNAL";
+    $("frameCap").textContent = B.imagesHidden ? "game screenshots are shown on the live stream only" : r?.running ? "waiting for the first captured frame…" : "Latest frame from the game";
   }
 
   if(!first){
