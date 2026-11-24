@@ -509,10 +509,19 @@ function renderBuild(){
   const mx = Math.max(1, ...recent.map(x=>x.frames||0));
   $("runs").innerHTML = [...recent].reverse().map((x,i,a)=>`<i class="${x.crashed?"bad":""} ${i===a.length-1&&r?.running?"live":""}" style="height:${Math.max(6,(x.frames||0)/mx*100)}%"></i>`).join("");
 
-  const fr = B.frame;
-  if(fr){
-    if(prev.frameT !== fr.t){ const src = window.STATIC_DATA ? (fr.kind==="image" ? "frame.png?t="+encodeURIComponent(fr.t) : null) : "/api/frame?t="+encodeURIComponent(fr.t);
+  const fr = B.frame, shot = B.shot, liveImg = fr && fr.kind==="image", S = window.STATIC_DATA, enc = encodeURIComponent;
+  if(liveImg || shot){   // a real picture: the live frame, or else the saved milestone screenshot
+    const key = liveImg ? "f"+fr.t : "s"+shot.t;
+    if(prev.imgKey !== key) $("frameImg").src = liveImg ? (S ? "frame.png?t=" : "/api/frame?t=")+enc(fr.t) : (S ? "shot.png?t=" : "/api/shot?t=")+enc(shot.t);
+    prev.imgKey = key;
+    $("noFrame").style.display = "none";
+    $("frameTag").textContent = liveImg ? "REAL FRAME ✓ LIVE" : "FIRST FRAME ✓ SAVED"; $("frameTag").className = "osd br image";
+    $("frameCap").textContent = liveImg ? `${fr.name.replace(/\.bmp$/i,"").replace("_"," ")} · ${FRAME_TXT.image} · ${ago(fr.t)}`
+      : `${shot.name.replace(/\.png$/i,"").replace(/_/g," ")} · saved ${ago(shot.t)}${fr ? ` · live run: ${FRAME_TXT[fr.kind]||fr.kind}` : ""}`;
+  } else if(fr){
+    if(prev.frameT !== fr.t){ const src = S ? null : "/api/frame?t="+enc(fr.t);
       if(src) $("frameImg").src = src; else $("frameImg").removeAttribute("src"); }
+    prev.imgKey = null;
     $("noFrame").style.display = "none";
     $("frameTag").textContent = FTAG[fr.kind] || fr.kind; $("frameTag").className = "osd br " + fr.kind;
     $("frameCap").textContent = `${fr.name.replace(/\.bmp$/i,"").replace("_"," ")} · ${FRAME_TXT[fr.kind]||fr.kind} · ${ago(fr.t)}`;
@@ -530,11 +539,11 @@ function renderBuild(){
       if(r.crashed) queueAlert({type:"banner", red:true, kicker:"Test run crashed", title:"Wasted", sub:`after ${dur(runLen(r))} · <b>${fmt(r.frames)}</b> frames at ${r.fps??"?"} fps`});
       else queueAlert({type:"toast", label:"Run ended", title:`${fmt(r.frames)} frames at ${r.fps??"?"} fps · ran ${dur(runLen(r))}`});
     }
-    if(fr && fr.kind==="image" && !sawImage)
+    if((liveImg || shot) && !sawImage)
       queueAlert({type:"banner", kicker:"First visible frame", title:"Mission passed", sub:"The game is drawing a <b>real picture</b>!"});
   }
-  if(fr && fr.kind==="image") sawImage = true;
-  prev = { build:b?.n, runStart:r?.start, running:r?.running, frameT:fr?.t };
+  if(liveImg || shot) sawImage = true;
+  prev = { ...prev, build:b?.n, runStart:r?.start, running:r?.running, frameT:fr?.t };
 }
 
 /* ---- road to playable: checkpoints + rival ghost cars ---- */

@@ -537,10 +537,12 @@ function sceneHTML(id){
   }
   if(id==="bench"){
     const B = state.live.bench, b0 = B.builds?.[0], r = B.latestRun, best = B.bestToday, fr = B.frame, L = state.live?.leonida;
-    const src = fr ? (window.STATIC_DATA ? (fr.kind==="image" ? "frame.png?t="+encodeURIComponent(fr.t) : null) : "/api/frame?t="+encodeURIComponent(fr.t)) : null;
+    const S = window.STATIC_DATA, shot = B.shot, liveImg = fr && fr.kind==="image", useShot = !liveImg && shot;
+    const src = useShot ? (S ? "shot.png?t=" : "/api/shot?t=")+encodeURIComponent(shot.t)
+      : fr ? (S ? (liveImg ? "frame.png?t="+encodeURIComponent(fr.t) : null) : "/api/frame?t="+encodeURIComponent(fr.t)) : null;
     const rs = r ? (r.crashed ? ["CRASHED","badc",""] : r.running ? ["RUNNING","okc","run"] : ["IDLE","",""]) : ["—","",""];
-    return `<div class="bench c"><div><div class="shot">${src?`<img src="${src}" alt="">`:`<div class="nf">NO FRAME YET</div>`}${fr?`<span class="ft">${FTAG[fr.kind]||fr.kind}</span>`:""}</div>
-        <div class="fcap">${fr ? `${esc(fr.name)} · ${fr.w}×${fr.h} · ${ago(fr.t)}` : "waiting for the first captured frame"}</div></div>
+    return `<div class="bench c"><div><div class="shot">${src?`<img src="${src}" alt="">`:`<div class="nf">NO FRAME YET</div>`}${useShot?`<span class="ft">FIRST FRAME ✓ SAVED</span>`:fr?`<span class="ft">${FTAG[fr.kind]||fr.kind}</span>`:""}</div>
+        <div class="fcap">${useShot ? `${esc(shot.name.replace(/\.png$/i,"").replace(/_/g," "))} · saved ${ago(shot.t)}` : fr ? `${esc(fr.name)} · ${fr.w}×${fr.h} · ${ago(fr.t)}` : "waiting for the first captured frame"}</div></div>
       <div class="bst">
         <div><div class="k">Latest build</div><div class="v">${b0?`#${b0.n} <span class="${b0.failed?"badc":"okc"}">${b0.failed?"✗":"✓"}</span>`:"—"}</div><div class="s">${b0?`${b0.elapsed??"?"}s · ${ago(b0.t)}`:""}</div></div>
         <div><div class="k">Run state</div><div class="v ${rs[1]}"><span class="rstate ${rs[2]}">${rs[0]}</span></div><div class="s">${r?`started ${ago(r.start)}`:""}</div></div>
@@ -666,7 +668,11 @@ function detectAlerts(){
     if(!first && !noteSeen.has(k)) queueAlert({type:"toast", kind:"note", team:e.team, label:"Dev update", title:e.text});
     noteSeen.add(k);
   }
+  const B = state.live?.bench, img = B?.shot?.t || (B?.frame?.kind==="image" ? B.frame.t : null);
+  if(!first && img && !lastImg) queueAlert({type:"banner", team:"leonida", kicker:`${short(team("leonida").name)} · first visible frame`, title:"Mission passed", sub:"The game's first menu is on screen!"});
+  if(img) lastImg = img;
 }
+let lastImg = null;
 
 /* ---- main ---- */
 function render(){
