@@ -216,6 +216,7 @@ body.nolive .offline{display:grid}
   <div class="offline">RECONNECTING TO TRACKER…</div>
 </div>
 
+<script src="engage.js"></script>
 <script>
 const params = new URLSearchParams(location.search);
 const ROTATE = (+params.get("rotate") || 12) * 1000;   // seconds per spotlight scene
@@ -439,6 +440,7 @@ function render(){
   if(!document.querySelector(".team")) build();
   renderTeams(); renderFeed(); renderTicker(); detectAlerts();
   if(first) showScene(0); else refreshScene();
+  window.Engage?.update(state);
   first = false;
 }
 function setLive(on){ $("onair").classList.toggle("off", !on); $("onairTxt").textContent = on ? "LIVE" : "OFFLINE"; document.body.classList.toggle("nolive", !on && !state); }
@@ -459,6 +461,7 @@ function connect(){
   es.onopen = () => setLive(true);
   es.onmessage = e => { state = JSON.parse(e.data); setLive(true); render(); };
   es.addEventListener("alert", e => { const a = JSON.parse(e.data); queueAlert({kind:a.kind, team:a.team, label:"Test", title:a.title, meta:a.meta}); });
+  es.addEventListener("engage", e => window.Engage?.event(JSON.parse(e.data)));
   es.onerror = () => setLive(false);
 }
 setInterval(()=>{ $("clock").textContent = new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}); }, 1000);

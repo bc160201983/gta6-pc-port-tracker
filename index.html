@@ -229,7 +229,14 @@ footer code{color:var(--muted)}
   *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
   .rv{opacity:1;transform:none}
 }
-html.static #editBtn,html.static #testBtn,html.static #exportBtn,html.static .offline,html.static footer{display:none!important}
+html.static #editBtn,html.static #testBtn,html.static #exportBtn,html.static .offline,html.static footer,html.static .engage{display:none!important}
+.engage{padding:20px 22px;margin-bottom:16px}
+.eng{display:grid;grid-template-columns:110px auto 110px 110px 1fr 1fr;gap:10px;align-items:end}
+.eng label{display:grid;gap:5px;font:600 10px "JetBrains Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.eng-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.eng-acts .note{font:12px "JetBrains Mono",monospace;color:var(--muted);margin-left:auto}
+.btn.yt{background:#ff0033;color:#fff;border-color:transparent}
+@media(max-width:900px){.eng{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -256,6 +263,27 @@ html.static #editBtn,html.static #testBtn,html.static #exportBtn,html.static .of
   </header>
 
   <div class="glass offline">The live server isn't connected. Run <code>node server.js</code> in the tracker folder and open <b>http://localhost:8787</b>. Showing the last saved data.</div>
+
+  <section class="glass engage" id="engage">
+    <h2>Stream engagement <span class="count">sub goal + call-outs on the stream pages</span></h2>
+    <div class="eng">
+      <label>Subscribers<input class="f" type="number" min="0" id="enSubs" placeholder="hidden"></label>
+      <button class="btn yt" id="enPlus">+1 sub 🎉</button>
+      <label>Goal<input class="f" type="number" min="1" id="enGoal"></label>
+      <label>Then +<input class="f" type="number" min="0" id="enStep"></label>
+      <label>Channel name<input class="f" id="enName"></label>
+      <label>YouTube handle (auto count)<input class="f" id="enHandle" placeholder="@yourchannel"></label>
+    </div>
+    <div class="eng-acts">
+      <button class="btn" data-en="test-sub">Test new-sub alert</button>
+      <button class="btn" data-en="test-goal">Test goal reached</button>
+      <button class="btn" data-en="cta" data-m="sub">Show subscribe</button>
+      <button class="btn" data-en="cta" data-m="vote">Show chat vote</button>
+      <button class="btn" data-en="cta" data-m="predict">Show prediction</button>
+      <button class="btn" data-en="cta" data-m="like">Show like</button>
+      <span class="note" id="enNote"></span>
+    </div>
+  </section>
 
   <section class="teams" id="teams"></section>
 
@@ -527,8 +555,34 @@ function render(){
   if(!document.querySelector(".team")) buildTeams();
   renderTeams(); renderBuild(); renderBoard(); renderStream(); renderTicker(); toastNew();
   if(!document.activeElement?.matches("input[type=range]")) renderMilestones();
+  renderEngage();
   first = false;
 }
+
+/* ---- stream engagement (sub goal + call-outs) ---- */
+function renderEngage(){
+  const s = state.stream || {}, yt = state.live?.youtube, auto = yt && Number.isFinite(yt.subs);
+  const set = (id, v)=>{ const el = $(id); if(document.activeElement !== el) el.value = v ?? ""; };
+  set("enSubs", auto ? yt.subs : s.subs); set("enGoal", s.subGoal ?? 100); set("enStep", s.goalStep ?? 0);
+  set("enName", s.channelName ?? ""); set("enHandle", s.youtubeHandle ?? "");
+  $("enSubs").disabled = $("enPlus").disabled = !!auto;
+  $("enNote").textContent = auto ? `auto from YouTube · ${yt.title || ""} · updated ${new Date(yt.t).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}`
+    : s.youtubeHandle ? "add a YouTube API key in youtube-key.txt for an automatic count" : "leave Subscribers empty to just show “Subscribe + bell”";
+}
+function saveStream(patch){ state.stream = { ...(state.stream || {}), ...patch }; save(); renderEngage(); }
+$("engage").addEventListener("change", e=>{
+  const id = e.target.id, v = e.target.value.trim();
+  if(id==="enSubs") saveStream({ subs: v==="" ? null : Math.max(0, Math.round(+v)) });
+  if(id==="enGoal" && +v>0) saveStream({ subGoal: Math.round(+v) });
+  if(id==="enStep") saveStream({ goalStep: Math.max(0, Math.round(+v||0)) });
+  if(id==="enName") saveStream({ channelName: v });
+  if(id==="enHandle") saveStream({ youtubeHandle: v });
+});
+$("enPlus").onclick = ()=> saveStream({ subs: (state.stream?.subs || 0) + 1 });
+$("engage").addEventListener("click", e=>{
+  const b = e.target.closest("[data-en]"); if(!b) return;
+  fetch("/api/engage", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({type:b.dataset.en, moment:b.dataset.m})});
+});
 
 /* ---- reveal on scroll ---- */
 const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} }),{threshold:.08});

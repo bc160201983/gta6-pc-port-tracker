@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-focus="leonida">
 <head>
 <script>window.STATIC_DATA="data.json";</script>
 <meta charset="utf-8">
@@ -245,6 +245,7 @@ body.nolive .offline{display:grid}
   <div class="offline">RECONNECTING TO TRACKER…</div>
 </div>
 
+<script src="engage.js"></script>
 <script>
 const params = new URLSearchParams(location.search);
 const ALERT_MS = (+params.get("alert") || 7) * 1000;
@@ -431,6 +432,7 @@ function nextAlert(){
 function render(){
   if(!state) return;
   renderHero(); renderBuild(); renderRoad(); renderLists(); renderTicker();
+  window.Engage?.update(state);
   first = false;
 }
 function setLive(on){ $("onair").classList.toggle("off", !on); $("onairTxt").textContent = on ? "LIVE" : "OFFLINE"; document.body.classList.toggle("nolive", !on && !state); }
@@ -451,6 +453,7 @@ function connect(){
   es.onopen = () => setLive(true);
   es.onmessage = e => { state = JSON.parse(e.data); setLive(true); render(); };
   es.addEventListener("alert", e => { const a = JSON.parse(e.data); queueAlert({kind:"note", label:"Test", title:a.title, meta:a.meta}); });
+  es.addEventListener("engage", e => window.Engage?.event(JSON.parse(e.data)));
   es.onerror = () => setLive(false);
 }
 const tick = ()=>{ $("clock").textContent = new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}); };
