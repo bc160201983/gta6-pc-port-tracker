@@ -12,6 +12,7 @@
   const SOUND = P.get("sound") === "1";
   const TEST = P.get("ctatest");
   const FOCUS = document.documentElement.dataset.focus || "leonida";
+  const GTA = document.documentElement.dataset.eg === "gta";       // stream.html: "RESPECT +1" / "MISSION PASSED" style
   const HOLD = 14000;
 
   const css = `
@@ -99,7 +100,16 @@
 .eg-cel .t{font:800 56px/1.1 Unbounded,sans-serif;letter-spacing:-.035em;margin-top:8px;background:linear-gradient(100deg,#fff,#ffc2d0);-webkit-background-clip:text;background-clip:text;color:transparent}
 .eg-cel .m{font:600 21px Inter,sans-serif;color:var(--muted);margin-top:8px}
 .eg-cel .m b{color:var(--ink)}
-.eg-conf{position:absolute;left:0;top:0;width:1920px;height:1080px;z-index:35;pointer-events:none}`;
+.eg-conf{position:absolute;left:0;top:0;width:1920px;height:1080px;z-index:35;pointer-events:none}
+.eg-cel.gta{left:0;right:0;top:380px;min-width:0;padding:34px 0 38px;border:none;border-radius:0;box-shadow:none;transform:none;
+  background:linear-gradient(90deg,transparent,rgba(5,2,10,.9) 22%,rgba(5,2,10,.9) 78%,transparent);transition:opacity .45s}
+.eg-cel.gta.show{transform:none}
+.eg-cel.gta .k{font:700 18px "JetBrains Mono",monospace;letter-spacing:.3em;color:#ff6b86}
+.eg-cel.gta .t{font:400 124px/1 Anton,Impact,sans-serif;letter-spacing:.02em;text-transform:uppercase;margin-top:6px;background:none;-webkit-background-clip:initial;background-clip:initial;color:#ffd23f;
+  text-shadow:0 5px 0 #3a1d00,3px 3px 0 #000,-3px 3px 0 #000,3px -3px 0 #000,-3px -3px 0 #000,0 0 50px rgba(255,190,40,.5);transform:scale(1.5);opacity:0;transition:transform .7s cubic-bezier(.34,1.56,.64,1),opacity .35s}
+.eg-cel.gta.show .t{transform:none;opacity:1}
+.eg-cel.gta .m{font:700 26px Inter,sans-serif;color:#fff;text-shadow:0 2px 0 #000}
+.eg-cel.gta .m b{color:#7be07b}`;
 
   const ICON = {
     yt: '<svg viewBox="0 0 24 24"><path fill="#fff" d="M9 6.8v10.4L17.5 12z"/></svg>',
@@ -170,7 +180,11 @@
   function celebrate(kind, subs, n = 1) {
     if (document.hidden || !dom) return;
     const goal = goalFor(subs), c = dom.cel;
-    c.innerHTML = kind === "goal"
+    c.className = "eg-cel" + (GTA ? " gta" : "");
+    if (GTA) c.innerHTML = kind === "goal"
+      ? `<div class="k">SUB GOAL REACHED · ${fmt(subs)} SUBSCRIBERS</div><div class="t">Mission passed</div><div class="m">Thank you! Next goal <b>${fmt(goal)}</b></div>`
+      : `<div class="k">NEW SUBSCRIBER${n > 1 ? "S" : ""}</div><div class="t">Respect +${n}</div><div class="m"><b>${fmt(subs)}</b> / ${fmt(goal)} · only ${fmt(goal - subs)} to the goal · thank you!</div>`;
+    else c.innerHTML = kind === "goal"
       ? `<div class="k">🎉 SUB GOAL REACHED 🎉</div><div class="t">${fmt(subs)} subscribers!</div><div class="m">Thank you all — next goal <b>${fmt(goal)}</b></div>`
       : `<div class="k">NEW SUBSCRIBER${n > 1 ? "S" : ""} 🔔</div><div class="t">${n > 1 ? `+${n} — thank you!` : "Thank you! 🎉"}</div><div class="m"><b>${fmt(subs)}</b> / ${fmt(goal)} · only <b>${fmt(goal - subs)}</b> to the goal</div>`;
     c.classList.remove("show"); void c.offsetWidth; c.classList.add("show");

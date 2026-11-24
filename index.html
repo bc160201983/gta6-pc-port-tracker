@@ -423,8 +423,8 @@ function renderTeams(){
     // counts that hit the fetch size are lower bounds: show "N+"
     const cap = (n, len) => n && n>=len ? "+" : "";
     tween(q("open"), f.openPRs||0, 0, cap(f.openPRs, f.pulls?.length));
-    tween(q("merged"), f.merged24h||0, 0, cap(f.merged24h, f.pulls?.length));
-    tween(q("commits"), f.commits24h||0, 0, cap(f.commits24h, f.commits?.length));
+    tween(q("merged"), f.merged24h||0, 0, (f.merged24hCapped ? "+" : ""));
+    tween(q("commits"), f.commits24h||0, 0, (f.commits24hCapped ? "+" : ""));
     if(shown[t.id]!==undefined && Math.abs(shown[t.id]-p)>.01){ card.classList.add("ping"); setTimeout(()=>card.classList.remove("ping"),1800); }
     shown[t.id] = p;
 

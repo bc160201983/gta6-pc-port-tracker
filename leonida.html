@@ -296,8 +296,8 @@ function renderHero(){
   $("stage2").textContent = cur ? `${cur.name} · ${cur.values[t.id]||0}%` : "Complete";
   $("head").textContent = t.headline || "";
   const cap = (n,len)=> n && n>=len ? "+" : "";
-  tween($("cCommits"), f.commits24h||0, 0, cap(f.commits24h, f.commits?.length));
-  tween($("cMerged"), f.merged24h||0, 0, cap(f.merged24h, f.pulls?.length));
+  tween($("cCommits"), f.commits24h||0, 0, (f.commits24hCapped ? "+" : ""));
+  tween($("cMerged"), f.merged24h||0, 0, (f.merged24hCapped ? "+" : ""));
   const ranked = [...state.teams].sort((x,y)=>total(y.id)-total(x.id));
   $("cRank").textContent = "#"+(ranked.indexOf(t)+1)+" of "+ranked.length;
   if(!first && lastPct!==undefined && Math.abs(p-lastPct)>=0.05){
