@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<script>window.STATIC_DATA="data.json";</script>
+<script>window.STATIC_DATA="data.json";window.PAGE_REV="87e63e5c4c";</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Port Race Tracker</title>
@@ -572,8 +572,15 @@ function toastNew(){
   }, i*350));
 }
 
+/* ---- self-update: reload when the tracker's page code is newer than this copy (once per version) ---- */
+function checkRev(d){
+  if(!window.PAGE_REV || !d?.rev || d.rev === window.PAGE_REV) return;
+  try{ if(sessionStorage.getItem("revTried") === d.rev) return; sessionStorage.setItem("revTried", d.rev); }catch{}
+  const u = new URL(location.href); u.searchParams.set("v", d.rev); location.replace(u.href);
+}
 function render(){
   if(!state) return;
+  checkRev(state);
   if(!document.querySelector(".team")) buildTeams();
   renderTeams(); renderBuild(); renderBoard(); renderStream(); renderTicker(); toastNew();
   if(!document.activeElement?.matches("input[type=range]")) renderMilestones();

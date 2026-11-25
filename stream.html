@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" data-eg="gta">
 <head>
-<script>window.STATIC_DATA="data.json";</script>
+<script>window.STATIC_DATA="data.json";window.PAGE_REV="87e63e5c4c";</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Port Race — Stream</title>
@@ -725,9 +725,16 @@ function detectAlerts(){
 }
 let lastImg = null;
 
+/* ---- self-update: reload when the tracker's page code is newer than this copy (once per version) ---- */
+function checkRev(d){
+  if(!window.PAGE_REV || !d?.rev || d.rev === window.PAGE_REV) return;
+  try{ if(sessionStorage.getItem("revTried") === d.rev) return; sessionStorage.setItem("revTried", d.rev); }catch{}
+  const u = new URL(location.href); u.searchParams.set("v", d.rev); location.replace(u.href);
+}
 /* ---- main ---- */
 function render(){
   if(!state) return;
+  checkRev(state);
   const sig = state.teams.map(t=>t.id+":"+t.color).join()+"|"+state.milestones.map(m=>m.name).join();
   if(sig !== builtSig){ if(builtSig){ first = true; for(const k in lastPct) delete lastPct[k]; lastLeader = null; } builtSig = sig; build(); }
   $("sub").textContent = `${state.teams.length} crews · ${state.scale ? "scored on PortWatch VI's public scale" : "racing to run it natively on PC"}`;
