@@ -14,7 +14,8 @@
 :root{
   --bg:#0a0512; --ink:#fff7f0; --muted:#bfaecf; --dim:#6f6184; --line:rgba(255,255,255,.09);
   --panel:rgba(17,8,30,.74);
-  --a:#ff3d8b; --b:#2fd4f0; --c:#ffb21e; --gold:#ffd23f; --money:#7be07b; --red:#ff2d55;
+  --a:#ff3d8b; --b:#2fd4f0; --c:#ffb21e; --d:#a678ff; --e:#5b8cff; --f:#7be07b; --g:#ff6a3d; --h:#cfd6e6; --i:#ff9de2;
+  --gold:#ffd23f; --money:#7be07b; --red:#ff2d55;
   --open:#3ddc84; --merged:#a678ff; --closed:#ff5c69; --draft:#8a85a0;
   --ease:cubic-bezier(.2,.8,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
   --tc:var(--gold);
@@ -22,7 +23,7 @@
 *{box-sizing:border-box;margin:0}
 html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;cursor:none}
 body{color:var(--ink);font:20px/1.4 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-.a{--tc:var(--a)} .b{--tc:var(--b)} .c{--tc:var(--c)}
+.a{--tc:var(--a)} .b{--tc:var(--b)} .c{--tc:var(--c)} .d{--tc:var(--d)} .e{--tc:var(--e)} .f{--tc:var(--f)} .g{--tc:var(--g)} .h{--tc:var(--h)} .i{--tc:var(--i)}
 .anton{font-family:Anton,Impact,sans-serif;font-weight:400}
 #stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;overflow:hidden;background:var(--bg)}
 
@@ -59,7 +60,9 @@ body{color:var(--ink);font:20px/1.4 Inter,system-ui,sans-serif;-webkit-font-smoo
 .lbl::before{content:"";width:6px;height:20px;border-radius:2px;background:var(--pc,var(--gold));box-shadow:0 0 12px var(--pc,var(--gold))}
 .lbl small{font:600 13px "JetBrains Mono",monospace;letter-spacing:.14em;color:var(--muted)}
 
-.main{position:absolute;left:40px;right:40px;top:26px;bottom:70px;display:grid;grid-template-rows:92px 296px 150px 1fr;gap:16px;z-index:2}
+.main{position:absolute;left:40px;right:40px;top:26px;bottom:70px;display:grid;grid-template-rows:92px 462px 1fr;gap:16px;z-index:2}
+.board{display:grid;grid-template-columns:600px 1fr;gap:16px;min-height:0}
+.lcol{display:grid;grid-template-rows:296px 1fr;gap:16px;min-height:0}
 
 /* ---------- header ---------- */
 .top{display:flex;align-items:center;justify-content:space-between}
@@ -80,7 +83,7 @@ body{color:var(--ink);font:20px/1.4 Inter,system-ui,sans-serif;-webkit-font-smoo
 .clockp{font:400 40px/1 Anton,sans-serif;letter-spacing:.04em;color:#fff;text-shadow:0 3px 0 #000,0 0 18px rgba(255,255,255,.25);padding:0 4px}
 
 /* ---------- crew cards ---------- */
-.crews{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.crews{display:grid;min-height:0}
 .crew{--pc:var(--tc);padding:18px 22px 16px;display:grid;grid-template-columns:196px 1fr;grid-template-rows:1fr auto;column-gap:20px;row-gap:12px;overflow:hidden;transition:box-shadow .8s,transform .8s var(--ease)}
 .crew .cglow{position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,var(--tc),transparent 62%);opacity:.16;top:-260px;left:-200px;pointer-events:none}
 .crew.ping{box-shadow:0 0 0 2px var(--tc),0 0 90px -10px var(--tc);transform:translateY(-4px)}
@@ -128,33 +131,46 @@ body{color:var(--ink);font:20px/1.4 Inter,system-ui,sans-serif;-webkit-font-smoo
 .bars i.z{background:rgba(255,255,255,.1)}
 .bars i:last-child{box-shadow:0 0 10px var(--tc)}
 
-/* ---------- the race (highway) ---------- */
-.race{--pc:var(--gold);display:grid;grid-template-columns:1fr 470px;gap:22px;padding:12px 22px 14px}
-.road{position:relative;display:grid;grid-template-rows:26px 1fr;min-width:0}
-.cps{position:relative}
-.cp{position:absolute;bottom:4px;transform:translateX(-50%);display:flex;align-items:center;gap:5px;font:700 11px "JetBrains Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
-.cp::before{content:"";width:9px;height:9px;border-radius:50%;border:2px solid currentColor}
-.cp.hit{color:var(--gold)} .cp.hit::before{background:var(--gold);box-shadow:0 0 10px var(--gold)}
-.cp.fin{transform:translateX(-100%)}
-.lanes{position:relative;border-radius:10px;overflow:hidden;background:linear-gradient(180deg,#17101f,#120c19);border:1px solid rgba(255,255,255,.07)}
-.lanes::before{content:"";position:absolute;left:0;right:0;top:33.33%;height:2px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.35) 0 26px,transparent 26px 52px);animation:road 1.4s linear infinite}
-.lanes::after{content:"";position:absolute;left:0;right:0;top:66.66%;height:2px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.35) 0 26px,transparent 26px 52px);animation:road 1.4s linear infinite}
-@keyframes road{to{background-position:-52px 0}}
-.cpl{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed rgba(255,210,63,.18)}
-.cpl.hit{border-left-color:rgba(255,210,63,.45)}
-.finish{position:absolute;right:0;top:0;bottom:0;width:16px;background:conic-gradient(#fff 0 25%,#111 0 50%,#fff 0 75%,#111 0) 0 0/8px 8px;opacity:.75}
-.lane{position:absolute;left:0;right:16px;height:33.33%;z-index:1}
-.lane:nth-child(1){top:0}.lane:nth-child(2){top:33.33%}.lane:nth-child(3){top:66.66%}
-.trail{position:absolute;left:0;top:50%;height:6px;margin-top:-3px;width:0;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--tc) 70%,transparent));border-radius:3px;transition:width 1.8s var(--ease)}
-.car{position:absolute;top:50%;left:0;width:56px;height:26px;margin-top:-13px;margin-left:-56px;transition:left 1.8s var(--ease)}
-.car svg{width:56px;height:26px;display:block;filter:drop-shadow(0 0 8px var(--tc))}
-.car::after{content:"";position:absolute;left:52px;top:-6px;width:70px;height:38px;background:radial-gradient(ellipse at 0 50%,rgba(255,255,220,.5),transparent 65%);pointer-events:none}
-.tagc{position:absolute;right:64px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:8px;white-space:nowrap;font:400 17px/1 Anton,sans-serif;letter-spacing:.05em;text-transform:uppercase;padding:4px 9px;border-radius:6px;background:rgba(10,5,18,.8);border:1px solid color-mix(in srgb,var(--tc) 50%,transparent)}
-.tagc em{font:700 13px "JetBrains Mono",monospace;font-style:normal;color:var(--tc)}
-.tagc u{text-decoration:none;font:700 12px "JetBrains Mono",monospace;color:#ff8a8a}
-.today{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:auto 1fr 1fr;gap:4px 14px;border-left:1px solid var(--line);padding-left:22px}
-.today .lbl{grid-column:1/-1;font-size:18px;margin-bottom:4px}
-.tst .v{font:400 34px/1.05 Anton,sans-serif;letter-spacing:.02em;color:#fff}
+/* ---------- the race board: every crew on one scale ---------- */
+.race{--pc:var(--gold);padding:10px 22px 10px;display:grid;grid-template-rows:40px 1fr;gap:4px;min-width:0;min-height:0}
+.rh,.ln{display:grid;grid-template-columns:40px 178px 1fr 84px 132px;column-gap:12px;align-items:center}
+.rh .lbl{grid-column:1/3;font-size:20px}
+.rh .hk{font:700 10px "JetBrains Mono",monospace;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;align-self:end;padding-bottom:3px}
+.rh .hk.r{text-align:right}
+.cpk{position:relative;height:100%}
+.cpk span{position:absolute;transform:translateX(-50%);font:700 10px/1 "JetBrains Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+.cpk span.up{top:4px} .cpk span.dn{bottom:3px}
+.cpk span.hit{color:var(--gold)} .cpk span.pw{color:var(--money)} .cpk span.end{transform:translateX(-100%)}
+.rows{position:relative;min-height:0}
+.cpov{position:absolute;top:0;bottom:0;left:calc(40px + 178px + 24px);right:calc(84px + 132px + 24px);pointer-events:none}
+.cpov i{position:absolute;top:0;bottom:0;border-left:2px dashed rgba(255,210,63,.2)}
+.cpov i.pl{border-left:2px solid rgba(123,224,123,.5)}
+.cpov .well{position:absolute;top:0;bottom:0;right:0;background:linear-gradient(90deg,rgba(123,224,123,.08),rgba(123,224,123,.02))}
+.ln{position:absolute;left:0;right:0;height:calc(100% / var(--n,9));top:calc(var(--i,0) * 100% / var(--n,9));border-top:1px solid var(--line);transition:top 1.2s var(--ease)}
+.ln.me{background:linear-gradient(90deg,color-mix(in srgb,var(--tc) 18%,transparent),transparent 75%);box-shadow:inset 4px 0 0 var(--tc);border-radius:6px}
+.ln.ping{animation:lnping 2.8s var(--ease)}
+@keyframes lnping{0%,35%{background:color-mix(in srgb,var(--tc) 32%,transparent)}100%{background:transparent}}
+.ln .rk2{font:400 24px/1 Anton,sans-serif;color:var(--tc);text-align:center}
+.ln.lead .rk2{color:var(--gold);text-shadow:0 0 14px rgba(255,210,63,.55)}
+.ln .who{min-width:0;display:flex;flex-direction:column;gap:3px}
+.ln .who b{font:400 20px/1 Anton,sans-serif;font-weight:400;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ln .who small{font:600 11px "JetBrains Mono",monospace;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ln .rd{position:relative;height:24px;border-radius:6px;background:rgba(10,6,18,.6);border:1px solid rgba(255,255,255,.06)}
+.ln .trail{position:absolute;left:0;top:50%;height:6px;margin-top:-3px;width:0;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--tc) 75%,transparent));border-radius:3px;transition:width 1.8s var(--ease)}
+.ln .car{position:absolute;top:50%;left:0;width:40px;height:19px;margin:-9.5px 0 0 -40px;transition:left 1.8s var(--ease)}
+.ln .car svg{width:40px;height:19px;display:block;filter:drop-shadow(0 0 6px var(--tc))}
+.ln .pc{text-align:right;white-space:nowrap}
+.ln .pc b{font:400 26px/1 Anton,sans-serif;font-weight:400;color:#fff}
+.ln .pc b i{font-style:normal}
+.ln .pc b small{font-size:15px;color:var(--tc);margin-left:1px}
+.ln .pc span{display:block;font:700 11px "JetBrains Mono",monospace;color:var(--muted);margin-top:3px}
+.ln.lead .pc span{color:var(--gold)}
+.ln .st{min-width:0}
+.ln .st b{display:block;font:400 15px/1.05 Anton,sans-serif;font-weight:400;letter-spacing:.05em;text-transform:uppercase;color:var(--tc);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ln .st span{display:block;font:600 11px "JetBrains Mono",monospace;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+.today{--pc:var(--c);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:auto 1fr 1fr;gap:2px 14px;padding:10px 22px 10px;min-height:0}
+.today .lbl{grid-column:1/-1;font-size:18px;margin-bottom:2px}
+.tst .v{font:400 32px/1.05 Anton,sans-serif;letter-spacing:.02em;color:#fff}
 .tst .v.money{color:var(--money);text-shadow:0 2px 0 #0c2a0c}
 .tst .v small{font:600 14px "JetBrains Mono",monospace;color:var(--muted);margin-left:4px}
 .tst .k{font:700 11px "JetBrains Mono",monospace;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;white-space:nowrap}
@@ -176,7 +192,7 @@ body{color:var(--ink);font:20px/1.4 Inter,system-ui,sans-serif;-webkit-font-smoo
 .scene>div.show{opacity:1;transform:none}
 
 /* milestones scene */
-.mt{display:grid;grid-template-columns:170px repeat(3,1fr);column-gap:22px;align-items:center}
+.mt{display:grid;grid-template-columns:170px repeat(var(--n,3),1fr);column-gap:22px;align-items:center}
 .mt .hd{font:400 17px Anton,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--tc);padding-bottom:6px}
 .mt .nm2{font:600 17px Inter,sans-serif;height:31px;display:flex;align-items:center;border-top:1px solid var(--line)}
 .mt .cl2{height:31px;display:grid;grid-template-columns:1fr 46px;gap:10px;align-items:center;border-top:1px solid var(--line)}
@@ -207,12 +223,12 @@ body{color:var(--ink);font:20px/1.4 Inter,system-ui,sans-serif;-webkit-font-smoo
 @keyframes sweep{to{transform:translateX(100%)}}
 
 /* activity scene */
-.actv{display:grid;gap:18px}
+.actv{display:grid;gap:9px}
 .arow{display:grid;grid-template-columns:200px 1fr 110px;gap:18px;align-items:end}
-.arow .who{font:400 22px/1 Anton,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:var(--tc)}
+.arow .who{font:400 20px/1 Anton,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:var(--tc)}
 .arow .who small{display:block;font:600 12px "JetBrains Mono",monospace;color:var(--muted);letter-spacing:.08em;margin-top:6px}
-.arow .bars{height:62px;gap:4px}
-.arow .tot{font:400 34px/1 Anton,sans-serif;text-align:right}
+.arow .bars{height:34px;gap:4px}
+.arow .tot{font:400 28px/1 Anton,sans-serif;text-align:right}
 .arow .tot small{display:block;font:600 11px "JetBrains Mono",monospace;color:var(--muted);letter-spacing:.1em}
 .axis{display:grid;grid-template-columns:200px 1fr 110px;gap:18px;font:600 11px "JetBrains Mono",monospace;color:var(--dim);letter-spacing:.08em}
 .axis div{display:flex;justify-content:space-between}
@@ -317,17 +333,19 @@ body.nolive .offline{display:grid}
     <div class="top">
       <div class="brand">
         <div class="logo"><span>GTA</span><span class="vi">VI</span></div>
-        <div class="bt"><div class="t1">PC PORT RACE</div><div class="t2">3 crews · racing to run it natively on PC</div></div>
+        <div class="bt"><div class="t1">PC PORT RACE</div><div class="t2" id="sub">racing to run it natively on PC</div></div>
       </div>
       <div class="right">
         <div class="pill onair off" id="onair"><span class="dot"></span><span id="onairTxt">CONNECTING</span></div>
         <div class="clockp" id="clock">--:--</div>
       </div>
     </div>
-    <div class="crews" id="crews"></div>
-    <div class="panel race">
-      <div class="road"><div class="cps" id="cps"></div><div class="lanes" id="lanes"></div></div>
-      <div class="today" id="today"></div>
+    <div class="board">
+      <div class="lcol"><div class="crews" id="crews"></div><div class="panel today" id="today"></div></div>
+      <div class="panel race">
+        <div class="rh"><div class="lbl">The race</div><div class="cpk" id="cpk"></div><div class="hk r">score</div><div class="hk">furthest step</div></div>
+        <div class="rows" id="rows"><div class="cpov" id="cpov"></div></div>
+      </div>
     </div>
     <div class="bottom">
       <div class="panel spot">
@@ -356,6 +374,7 @@ body.nolive .offline{display:grid}
 <script src="engage.js"></script>
 <script>
 const params = new URLSearchParams(location.search);
+if(params.get("static")) window.STATIC_DATA = params.get("static");   // preview a data snapshot
 const ROTATE = (+params.get("rotate") || 12) * 1000;   // seconds per spotlight scene
 const ALERT_MS = (+params.get("alert") || 7) * 1000;
 const SOUND = params.get("sound") === "1";
@@ -398,7 +417,7 @@ const CAR = `<svg viewBox="0 0 56 26"><rect x="4" y="0" width="11" height="5" rx
   <rect x="51" y="5" width="4" height="4" rx="1.5" fill="#fffbe0"/><rect x="51" y="17" width="4" height="4" rx="1.5" fill="#fffbe0"/>
   <rect x="0" y="5" width="3" height="4" rx="1" fill="#ff2d55"/><rect x="0" y="17" width="3" height="4" rx="1" fill="#ff2d55"/></svg>`;
 
-let state = null, first = true;
+let state = null, first = true, builtSig = null;
 const team = id => state.teams.find(t=>t.id===id) || {name:id,color:"a"};
 const total = id => { const w = state.milestones.reduce((s,m)=>s+m.weight,0);
   return state.milestones.reduce((s,m)=>s+(m.values[id]||0)*m.weight,0)/w; };
@@ -426,10 +445,17 @@ function tween(el, to, dec=0, suffix=""){
   requestAnimationFrame(step); setTimeout(fin, dur+150);
 }
 
-/* ---- crews + road ---- */
+/* ---- our crew card + the race board ---- */
+const FOCUS = "leonida";
 function cum(){ const w = state.milestones.reduce((s,m)=>s+m.weight,0); let c=0; return state.milestones.map(m=>(c+=m.weight)/w*100); }
+const ladderEnd = () => { const i = state.milestones.findIndex(m=>m.name==="Playable"); return i>=0 ? i : state.milestones.length-2; };
+const rankOf = id => 1 + state.teams.filter(x=>total(x.id) > total(id)+1e-9).length;   // ties share a rank
+// furthest step fully reached on the ladder, and the next one
+function stepOf(id){ const ms = state.milestones.slice(0, ladderEnd()+1); let reached = null, next = null;
+  for(const m of ms){ if((m.values[id]||0)>=100) reached = m; else { next = m; break; } } return {reached, next}; }
 function build(){
-  $("crews").innerHTML = state.teams.map(t=>`
+  const L = team(FOCUS);
+  $("crews").innerHTML = [L].map(t=>`
     <div class="panel crew ${t.color}" data-id="${t.id}"><div class="cglow"></div>
       <div class="cl"><div class="rk" data-f="rk"><b data-f="rank">#1</b><span data-f="rkt"></span></div>
         <div class="big"><span data-f="pct">0</span><small>%</small></div>
@@ -443,48 +469,68 @@ function build(){
       <div class="cb"><div class="seg">${state.milestones.map((m,i)=>`<span style="flex:${m.weight}"><i style="--d:${(i*.07).toFixed(2)}s"></i></span>`).join("")}</div>
         <div class="spark"><span class="k">24H CODE</span><div class="bars" data-f="bars">${"<i></i>".repeat(24)}</div><span class="k2" data-f="last"></span></div></div>
     </div>`).join("");
-  const C = cum();
-  $("cps").innerHTML = state.milestones.map((m,i)=>`<span class="cp ${i===state.milestones.length-1?"fin":""}" style="left:calc(${C[i]}% - ${i===state.milestones.length-1?0:16*C[i]/100}px)">${esc(m.name)}</span>`).join("");
-  $("lanes").innerHTML = state.teams.map(t=>`<div class="lane ${t.color}" data-id="${t.id}"><div class="trail"></div><div class="car">${CAR}<div class="tagc"><span data-f="nm"></span><em data-f="p"></em><u data-f="gap"></u></div></div></div>`).join("")
-    + state.milestones.slice(0,-1).map((m,i)=>`<div class="cpl" data-i="${i}" style="left:calc((100% - 16px) * ${C[i]/100})"></div>`).join("") + `<div class="finish"></div>`;
+  const C = cum(), ms = state.milestones, pe = ladderEnd(), lad = ms.slice(0, pe+1), hasWell = pe < ms.length-1;
+  $("cpk").innerHTML = lad.map((m,i)=>`<span class="${i%2?"dn":"up"}" data-c="${C[i]}" style="left:${C[i]}%">${esc(m.name)}</span>`).join("")
+    + (hasWell ? `<span class="pw ${lad.length%2?"dn":"up"}" style="left:${(C[pe]+100)/2}%">playing well →</span>` : "")
+    + `<span class="end ${(lad.length+1)%2?"dn":"up"}" style="left:100%">100%</span>`;
+  $("rows").style.setProperty("--n", state.teams.length);
+  $("rows").innerHTML = `<div class="cpov" id="cpov">${hasWell?`<div class="well" style="left:${C[pe]}%"></div>`:""}${lad.map((m,i)=>`<i class="${i===pe&&hasWell?"pl":""}" style="left:${C[i]}%"></i>`).join("")}</div>`
+    + state.teams.map((t,i)=>`<div class="ln ${t.color} ${t.id===FOCUS?"me":""}" data-id="${t.id}" style="--i:${i}">
+      <div class="rk2" data-f="rank">#</div>
+      <div class="who"><b>${esc(short(t.name))}</b><small>${esc(t.tag||"")}</small></div>
+      <div class="rd"><div class="trail"></div><div class="car">${CAR}</div></div>
+      <div class="pc"><b><i data-f="p">0</i><small>%</small></b><span data-f="gap"></span></div>
+      <div class="st"><b data-f="step"></b><span data-f="sub"></span></div></div>`).join("");
 }
 const lastPct = {}, lastVals = {}; let lastLeader = null;
 function renderCrews(){
   const R = ranked(), S = {}; let maxBar = 1;
   for(const t of state.teams){ S[t.id] = stats(t.id); maxBar = Math.max(maxBar, ...S[t.id].bars); }
+  const top = total(R[0].id);
   for(const t of state.teams){
-    const el = document.querySelector(`.crew[data-id="${t.id}"]`), q = f=>el.querySelector(`[data-f="${f}"]`);
-    const p = total(t.id), r = R.indexOf(t)+1, s = S[t.id], f = s.f, st = stageOf(t.id);
-    tween(q("pct"), p, 1);
-    q("rank").textContent = "#"+r; q("rkt").textContent = r===1 ? "LEADING" : `${(total(R[0].id)-p).toFixed(1)} BEHIND`;
-    q("rk").classList.toggle("first", r===1);
-    q("stars").querySelectorAll("i").forEach((s,i)=>s.classList.toggle("on", i < Math.round(p/20)));
-    const mo = state.live?.momentum?.[t.id] ?? 0, m = q("mo");
-    m.className = "mo " + (mo>0.04 ? "" : mo<-0.04 ? "dn" : "flat");
-    m.textContent = mo>0.04 ? `▲ +${mo.toFixed(1)}% in 24h` : mo<-0.04 ? `▼ ${mo.toFixed(1)}% in 24h` : "● steady 24h";
-    q("name").textContent = short(t.name); q("tag").textContent = t.tag || "";
-    const act = q("act"), fresh = s.last && Date.now()-s.last < 15*60e3;
-    act.className = "act" + (fresh ? " on" : ""); act.textContent = fresh ? "ACTIVE NOW" : (s.last ? "ACTIVE " + ago(s.last).toUpperCase() : "");
-    q("stage").textContent = st ? st.name : "Finished"; q("spct").textContent = st ? (st.values[t.id]||0)+"%" : "100%";
-    q("sbar").style.width = (st ? st.values[t.id]||0 : 100)+"%";
-    q("head").textContent = t.headline || "";
-    tween(q("commits"), f.commits24h||0, 0, f.commits24hCapped ? "+" : ""); tween(q("merged"), f.merged24h||0, 0, f.merged24hCapped ? "+" : "");
-    tween(q("open"), f.openPRs||0); tween(q("notes"), s.notesToday);
-    el.querySelectorAll(".seg span").forEach((sp,i)=>{ const v = state.milestones[i].values[t.id]||0; sp.classList.toggle("done", v>=100); sp.querySelector("i").style.width = v+"%"; });
-    q("bars").querySelectorAll("i").forEach((b,i)=>{ const v = s.bars[i]; b.classList.toggle("z", !v); b.style.height = v ? Math.max(14, v/maxBar*100)+"%" : "2px"; });
-    const lc = (f.commits||[])[0]; q("last").textContent = lc ? "LAST COMMIT " + ago(lc.t).toUpperCase() : "";
+    const p = total(t.id), r = rankOf(t.id), s = S[t.id], f = s.f, st = stageOf(t.id);
+    const el = document.querySelector(`.crew[data-id="${t.id}"]`);
+    if(el){ const q = f=>el.querySelector(`[data-f="${f}"]`);
+      tween(q("pct"), p, 1);
+      q("rank").textContent = "#"+r; q("rkt").textContent = r===1 ? "LEADING" : `OF ${state.teams.length} · ${(top-p).toFixed(1)} BEHIND`;
+      q("rk").classList.toggle("first", r===1);
+      q("stars").querySelectorAll("i").forEach((s,i)=>s.classList.toggle("on", i < Math.round(p/20)));
+      const mo = state.live?.momentum?.[t.id] ?? 0, m = q("mo");
+      m.className = "mo " + (mo>0.04 ? "" : mo<-0.04 ? "dn" : "flat");
+      m.textContent = mo>0.04 ? `▲ +${mo.toFixed(1)}% in 24h` : mo<-0.04 ? `▼ ${mo.toFixed(1)}% in 24h` : "● steady 24h";
+      q("name").textContent = short(t.name); q("tag").textContent = t.tag || "";
+      const act = q("act"), fresh = s.last && Date.now()-s.last < 15*60e3;
+      act.className = "act" + (fresh ? " on" : ""); act.textContent = fresh ? "ACTIVE NOW" : (s.last ? "ACTIVE " + ago(s.last).toUpperCase() : "");
+      q("stage").textContent = st ? st.name : "Finished"; q("spct").textContent = st ? Math.round(st.values[t.id]||0)+"%" : "100%";
+      q("sbar").style.width = (st ? st.values[t.id]||0 : 100)+"%";
+      q("head").textContent = t.headline || "";
+      tween(q("commits"), f.commits24h||0, 0, f.commits24hCapped ? "+" : ""); tween(q("merged"), f.merged24h||0, 0, f.merged24hCapped ? "+" : "");
+      tween(q("open"), f.openPRs||0); tween(q("notes"), s.notesToday);
+      el.querySelectorAll(".seg span").forEach((sp,i)=>{ const v = state.milestones[i].values[t.id]||0; sp.classList.toggle("done", v>=100); sp.querySelector("i").style.width = v+"%"; });
+      q("bars").querySelectorAll("i").forEach((b,i)=>{ const v = s.bars[i]; b.classList.toggle("z", !v); b.style.height = v ? Math.max(14, v/maxBar*100)+"%" : "2px"; });
+      const lc = (f.commits||[])[0]; q("last").textContent = lc ? "LAST COMMIT " + ago(lc.t).toUpperCase() : "";
+    }
 
-    const lane = document.querySelector(`.lane[data-id="${t.id}"]`), w = lane.offsetWidth || 1300;
-    lane.querySelector(".trail").style.width = (w*p/100)+"px";
-    lane.querySelector(".car").style.left = Math.max(56, w*p/100)+"px";
-    lane.querySelector('[data-f="nm"]').textContent = short(t.name);
-    lane.querySelector('[data-f="p"]').textContent = p.toFixed(1)+"%";
-    lane.querySelector('[data-f="gap"]').textContent = r===1 ? "" : "−"+(total(R[0].id)-p).toFixed(1);
+    const row = document.querySelector(`.ln[data-id="${t.id}"]`);
+    if(row){ const rq = f=>row.querySelector(`[data-f="${f}"]`);
+      row.style.setProperty("--i", R.indexOf(t));
+      rq("rank").textContent = "#"+r; row.classList.toggle("lead", r===1);
+      tween(rq("p"), p, 1);
+      rq("gap").textContent = r===1 ? "LEADS" : "−"+(top-p).toFixed(1);
+      const {reached, next} = stepOf(t.id), perf = state.milestones.find(m=>m.name==="Performance");
+      rq("step").textContent = reached ? reached.name : "Groundwork";
+      const nv = next ? next.values[t.id]||0 : 0, fps = perf ? (perf.values[t.id]||0)*0.3 : 0;
+      rq("sub").textContent = next && nv>0 ? `${next.name} ${Math.round(nv)}%` : !next && fps ? `~${fps.toFixed(0)} fps` :
+        f.commits24h ? `${fmt(f.commits24h)}${f.commits24hCapped?"+":""} commits 24h` : (s.last ? "active " + ago(s.last) : "");
+      const rd = row.querySelector(".rd"), w = rd.offsetWidth || 640;
+      row.querySelector(".trail").style.width = (w*p/100)+"px";
+      row.querySelector(".car").style.left = Math.max(40, w*p/100)+"px";
+    }
 
     // alerts: milestone completed -> MISSION PASSED; other progress -> banner
     const vals = state.milestones.map(m=>m.values[t.id]||0);
     if(!first && lastPct[t.id]!==undefined && Math.abs(p-lastPct[t.id])>=0.05){
-      el.classList.add("ping"); setTimeout(()=>el.classList.remove("ping"),2600);
+      for(const x of [el,row]) if(x){ x.classList.remove("ping"); void x.offsetWidth; x.classList.add("ping"); setTimeout(()=>x.classList.remove("ping"),2800); }
       const done = state.milestones.filter((m,i)=>vals[i]>=100 && (lastVals[t.id]?.[i] ?? 0) < 100);
       const d = p-lastPct[t.id], sg = d>0?"+":"";
       if(done.length) queueAlert({type:"banner", team:t.id, kicker:short(t.name), title:"Mission passed", sub:`${done.map(m=>m.name).join(" + ")} complete · <b>${sg}${d.toFixed(1)}%</b> · now ${p.toFixed(1)}%`});
@@ -493,9 +539,8 @@ function renderCrews(){
     }
     lastPct[t.id] = p; lastVals[t.id] = vals;
   }
-  const C = cum(), best = Math.max(...state.teams.map(t=>total(t.id)));
-  document.querySelectorAll(".cp").forEach((c,i)=>c.classList.toggle("hit", best >= C[i]-0.01));
-  document.querySelectorAll(".cpl").forEach(c=>c.classList.toggle("hit", best >= C[+c.dataset.i]-0.01));
+  const best = Math.max(...state.teams.map(t=>total(t.id)));
+  document.querySelectorAll("#cpk span[data-c]").forEach(c=>c.classList.toggle("hit", best >= +c.dataset.c-0.01));
   const leader = R[0].id;
   if(!first && lastLeader && leader!==lastLeader) queueAlert({type:"banner", team:leader, kicker:"Race update", title:"New leader", sub:`${esc(team(leader).name)} ${total(leader).toFixed(1)}% · ${esc(team(lastLeader).name)} ${total(lastLeader).toFixed(1)}%`});
   lastLeader = leader;
@@ -503,7 +548,7 @@ function renderCrews(){
 }
 function renderToday(S){
   const sum = k => state.teams.reduce((a,t)=>a+((feed(t.id)||{})[k]||0),0);
-  const B = state.live?.bench, L = state.teams.find(t=>t.id==="leonida") || state.teams[0], R = ranked();
+  const B = state.live?.bench, L = team(FOCUS), R = ranked();
   const gap = R[0].id===L.id ? null : total(R[0].id)-total(L.id);
   const capAll = k => state.teams.some(t=>(feed(t.id)||{})[k+"Capped"]) ? "+" : "";
   const items = [
@@ -521,19 +566,21 @@ function renderToday(S){
 /* ---- spotlight scenes ---- */
 let sceneIdx = 0, rotTimer;
 function sceneList(){
-  const list = [{id:"ms", title:"Milestones <b>· head to head</b>"}];
-  if(state.live?.bench) list.push({id:"bench", title:`<b>${esc(short(team("leonida").name))}</b> · live test bench`});
-  list.push({id:"act", title:"Who's coding <b>· last 24 hours</b>"});
-  for(const t of state.teams) list.push({id:"pr-"+t.id, title:`<b>${esc(short(t.name))}</b> · pull requests`});
+  const list = [{id:"ms", title:`Milestones <b>· top 3 vs ${esc(short(team(FOCUS).name))}</b>`}];
+  if(state.live?.bench) list.push({id:"bench", title:`<b>${esc(short(team(FOCUS).name))}</b> · live test bench`});
+  list.push({id:"act", title:"Who's coding <b>· busiest crews, last 24 hours</b>"});
+  for(const t of ranked()){ const f = feed(t.id); if(!f || !(f.pulls?.length || f.commits?.length)) continue;
+    list.push({id:"pr-"+t.id, title:`<b>${esc(short(t.name))}</b> · ${f.pulls?.length ? "pull requests" : "latest commits"}`}); }
   return list;
 }
 const dur = s => { if(!(s>0)) return "—"; s = Math.round(s); return s>=3600 ? `${Math.floor(s/3600)}h ${Math.floor(s%3600/60)}m` : `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`; };
 const FTAG = {black:"BLACK · LOADING FADE", debug:"DEBUG FILL", flat:"FLAT COLOUR", image:"REAL FRAME ✓"};
 function sceneHTML(id){
   if(id==="ms"){
-    return `<div class="mt"><div></div>${state.teams.map(t=>`<div class="hd ${t.color}">${esc(short(t.name))}</div>`).join("")}
-      ${state.milestones.map((m,i)=>`<div class="nm2">${esc(m.name)}</div>${state.teams.map((t,j)=>{const v=m.values[t.id]||0;
-        return `<div class="cl2 ${t.color}"><div class="tr"><i data-w="${v}" style="--d:${(i*.06+j*.05).toFixed(2)}s"></i></div><span class="v ${v>=100?"full":""}">${v}%</span></div>`;}).join("")}`).join("")}</div>`;
+    const cols = ranked().slice(0,3); if(!cols.includes(team(FOCUS))) cols.push(team(FOCUS));
+    return `<div class="mt" style="--n:${cols.length}"><div></div>${cols.map(t=>`<div class="hd ${t.color}">${esc(short(t.name))}</div>`).join("")}
+      ${state.milestones.map((m,i)=>`<div class="nm2">${esc(m.name)}</div>${cols.map((t,j)=>{const v=m.values[t.id]||0;
+        return `<div class="cl2 ${t.color}"><div class="tr"><i data-w="${v}" style="--d:${(i*.06+j*.05).toFixed(2)}s"></i></div><span class="v ${v>=100?"full":""}">${Math.round(v)}%</span></div>`;}).join("")}`).join("")}</div>`;
   }
   if(id==="bench"){
     const B = state.live.bench, b0 = B.builds?.[0], r = B.latestRun, best = B.bestToday, fr = B.frame, L = state.live?.leonida;
@@ -554,7 +601,8 @@ function sceneHTML(id){
   if(id==="act"){
     let mx = 1; const S = {}; for(const t of state.teams){ S[t.id] = stats(t.id); mx = Math.max(mx, ...S[t.id].bars); }
     const h = new Date().getHours(), lab = k => `${String((h-k+24)%24).padStart(2,"0")}:00`;
-    return `<div class="actv">${state.teams.map(t=>{const s=S[t.id], pk=s.bars.indexOf(Math.max(...s.bars));
+    const rows = [...state.teams].sort((x,y)=>S[y.id].sum-S[x.id].sum).slice(0,5); if(!rows.includes(team(FOCUS))) rows.push(team(FOCUS));
+    return `<div class="actv">${rows.map(t=>{const s=S[t.id], pk=s.bars.indexOf(Math.max(...s.bars));
       return `<div class="arow ${t.color}"><div class="who">${esc(short(t.name))}<small>${s.sum?`busiest ${lab(23-pk)}`:"quiet"}</small></div>
         <div class="bars">${s.bars.map(v=>`<i class="${v?"":"z"}" style="height:${v?Math.max(8,v/mx*100):3}${v?"%":"px"}"></i>`).join("")}</div>
         <div class="tot">${s.sum}<small>COMMITS</small></div></div>`;}).join("")}
@@ -562,6 +610,7 @@ function sceneHTML(id){
   }
   const tid = id.slice(3), t = team(tid), f = feed(tid);
   if(!f) return `<div class="empty">Fetching pull requests…</div>`;
+  if(!f.pulls?.length) return `<div class="prs ${t.color}">${(f.commits||[]).slice(0,6).map((c,i)=>`<div class="pr" style="--d:${(i*.08).toFixed(2)}s">${icon("commit")}<div class="tt">${esc(c.title)}</div><div class="mm"><span class="chip s-commit">commit</span>${esc(c.sha)} · ${ago(c.t)}</div></div>`).join("") || `<div class="empty">No commits yet.</div>`}</div>`;
   const pulls = [...f.pulls].sort((x,y)=>new Date(y.t)-new Date(x.t)).slice(0,6);
   return `<div class="prs ${t.color}">${pulls.map((p,i)=>{const st=prState(p);
     return `<div class="pr" style="--d:${(i*.08).toFixed(2)}s">${icon(st)}<div class="tt">${esc(p.title)}</div><div class="mm"><span class="chip s-${st}">${st}</span>#${p.n} · ${ago(p.t)}</div></div>`;}).join("") || `<div class="empty">No pull requests yet.</div>`}</div>`;
@@ -677,7 +726,9 @@ let lastImg = null;
 /* ---- main ---- */
 function render(){
   if(!state) return;
-  if(!document.querySelector(".crew")) build();
+  const sig = state.teams.map(t=>t.id+":"+t.color).join()+"|"+state.milestones.map(m=>m.name).join();
+  if(sig !== builtSig){ if(builtSig){ first = true; for(const k in lastPct) delete lastPct[k]; lastLeader = null; } builtSig = sig; build(); }
+  $("sub").textContent = `${state.teams.length} crews · ${state.scale ? "scored on PortWatch VI's public scale" : "racing to run it natively on PC"}`;
   renderCrews(); renderFeed(); renderTicker(); detectAlerts();
   if(first) showScene(0); else refreshScene();
   window.Engage?.update(state);

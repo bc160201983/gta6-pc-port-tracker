@@ -14,7 +14,7 @@
 :root{
   --bg:#0a0512; --ink:#fff7f0; --muted:#c4b2c9; --dim:#6f6184; --line:rgba(255,255,255,.09);
   --panel:rgba(17,8,30,.74);
-  --a:#ff3d8b; --b:#2fd4f0; --c:#ffb21e; --c2:#ff7a2f; --gold:#ffd23f; --money:#7be07b; --red:#ff2d55;
+  --a:#ff3d8b; --b:#2fd4f0; --c:#ffb21e; --d:#a678ff; --e:#5b8cff; --f:#7be07b; --g:#ff6a3d; --h:#cfd6e6; --i:#ff9de2; --c2:#ff7a2f; --gold:#ffd23f; --money:#7be07b; --red:#ff2d55;
   --open:#3ddc84; --merged:#a678ff; --closed:#ff5c69;
   --ease:cubic-bezier(.2,.8,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
   --tc:var(--c);
@@ -22,7 +22,7 @@
 *{box-sizing:border-box;margin:0}
 html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;cursor:none}
 body{color:var(--ink);font:20px/1.4 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-.a{--tc:var(--a)} .b{--tc:var(--b)} .c{--tc:var(--c)}
+.a{--tc:var(--a)} .b{--tc:var(--b)} .c{--tc:var(--c)} .d{--tc:var(--d)} .e{--tc:var(--e)} .f{--tc:var(--f)} .g{--tc:var(--g)} .h{--tc:var(--h)} .i{--tc:var(--i)}
 #stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;overflow:hidden;background:var(--bg)}
 
 /* ---------- Leonida sunset backdrop ---------- */
@@ -406,7 +406,7 @@ const CAR = col => `<svg viewBox="0 0 56 26"><rect x="4" y="0" width="11" height
   <rect x="10" y="6.5" width="9" height="13" rx="3" fill="#0b0614" opacity=".55"/><rect x="19" y="8" width="12" height="10" rx="2" fill="#fff" opacity=".18"/>
   <rect x="51" y="5" width="4" height="4" rx="1.5" fill="#fffbe0"/><rect x="51" y="17" width="4" height="4" rx="1.5" fill="#fffbe0"/>
   <rect x="0" y="5" width="3" height="4" rx="1" fill="#ff2d55"/><rect x="0" y="17" width="3" height="4" rx="1" fill="#ff2d55"/></svg>`;
-const TEAMC = {a:"#ff3d8b", b:"#2fd4f0", c:"#ffb21e"};
+const TEAMC = {a:"#ff3d8b", b:"#2fd4f0", c:"#ffb21e", d:"#a678ff", e:"#5b8cff", f:"#7be07b", g:"#ff6a3d", h:"#cfd6e6", i:"#ff9de2"};
 
 let state = null, first = true;
 const me = () => state.teams.find(t=>t.id===TEAM) || state.teams[0];
@@ -558,13 +558,18 @@ function renderRoad(){
   }
   const w = $("lane").offsetWidth - 16 || 1500;
   $("car").style.left = Math.max(64, w*p/100)+"px"; $("trail").style.width = (w*p/100)+"px";
-  // rival labels: the trailing one points left, the leading one right, so close rivals never overlap
+  // every rival is a ghost car; labels only for the leader and the nearest rival ahead and behind,
+  // the one behind pointing left and the others right, so labels never overlap
   const riv = state.teams.filter(x=>x.id!==id).sort((a,b)=>total(a.id)-total(b.id));
+  const ahead = riv.filter(x=>total(x.id) > p+1e-9), behind = riv.filter(x=>total(x.id) < p-1e-9);
+  const shown = new Set([ahead[ahead.length-1], ahead[0], behind[behind.length-1]].filter(Boolean).map(x=>x.id));
+  const back = behind[behind.length-1];
   riv.forEach((x,i)=>{
     const xp = total(x.id), gx = Math.max(40, w*xp/100);
     $("lane").querySelector(`.ghost[data-id="${x.id}"]`).style.left = gx+"px";
     const pin = $("rivals").querySelector(`.pin[data-id="${x.id}"]`);
-    pin.className = "pin " + (i < riv.length-1 ? "l" : "r");
+    pin.style.display = shown.has(x.id) ? "" : "none";
+    pin.className = "pin " + (back && x.id===back.id ? "l" : "r");
     pin.style.left = (gx - 20)+"px"; pin.querySelector("span").textContent = `${short(x.name)} ${xp.toFixed(1)}%`;
   });
   document.querySelectorAll(".cpl").forEach(c=>c.classList.toggle("hit", (ms[+c.dataset.i].values[id]||0) >= 100));
