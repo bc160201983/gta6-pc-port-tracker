@@ -118,14 +118,18 @@
     cursor: '<svg viewBox="0 0 24 24" width="36" height="36"><path d="M4 2.5 19.5 12l-6.6 1.6 3.6 7-3 1.5-3.5-7.1L4.8 19.5Z" fill="#fff" stroke="#111" stroke-width="1.3" stroke-linejoin="round"/></svg>',
   };
 
-  const TEAMC = { a: "#ff3d8b", b: "#2fd4f0", c: "#ffb21e" };
+  const TEAMC = { a: "#ff3d8b", b: "#2fd4f0", c: "#ffb21e", d: "#a678ff", e: "#5b8cff", f: "#7be07b", g: "#ff6a3d", h: "#cfd6e6", i: "#ff9de2" };
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   let S = null, dom = null, lastSubs, mi = 0, hookI = 0, busy = false, timers = [];
 
   const total = id => { const w = S.milestones.reduce((s, m) => s + m.weight, 0); return S.milestones.reduce((s, m) => s + (m.values[id] || 0) * m.weight, 0) / w; };
   const team = id => S.teams.find(t => t.id === id) || S.teams[0];
   const stageOf = id => { const ms = S.milestones; for (let i = ms.length - 1; i >= 0; i--) { const v = ms[i].values[id] || 0; if (v > 0 && v < 100) return ms[i]; } return ms.find(m => (m.values[id] || 0) < 100); };
-  const PHRASE = { "Graphics": "put its first real picture on screen", "Main Menu": "reach the main menu", "In-Game": "load into the world", "Playable": "become fully playable",
+  const PHRASE = { "Exe runs": "run the game's code", "First frame": "put its first frame on screen", "Main menu": "reach the main menu",
+                   "In the world": "draw the game world", "Playable": "become playable", "Story": "play further into the story",
+                   "Rendering": "look like the console", "Performance": "hit a smooth frame rate", "Stability": "run without crashing",
+                   // older scale
+                   "Graphics": "put its first real picture on screen", "Main Menu": "reach the main menu", "In-Game": "load into the world",
                    "Boot": "boot all the way", "Runtime": "finish its runtime", "Shaders": "finish its shaders" };
   const phrase = id => { const s = stageOf(id); return s ? (PHRASE[s.name] || "clear " + s.name) : "cross the finish line"; };
   const cfg = () => S?.stream || {};
@@ -261,8 +265,11 @@
       T(5600, () => dom.cursor.style.opacity = 0);
     },
     vote() {
-      const opts = S.teams.map((t, i) => ({ n: i + 1, t }));
-      const q = ["Who reaches gameplay first?", "Who wins the PC port race?", "Who boots to a playable build first?"][mi % 3];
+      // top 3 plus our port: a vote card fits four options
+      const top = [...S.teams].sort((a, b) => total(b.id) - total(a.id)).slice(0, 3);
+      if (!top.some(t => t.id === FOCUS)) top.push(team(FOCUS));
+      const opts = top.map((t, i) => ({ n: i + 1, t }));
+      const q = ["Who gets furthest into the story?", "Who wins the PC port race?", "Who hits 30 fps first?"][mi % 3];
       dom.body.innerHTML = `<div class="eg-k">💬 Chat vote</div><div class="eg-q">${q}</div>
         <div class="eg-opts">${opts.map((o, i) => `<div class="eg-opt" style="--tc:${TEAMC[o.t.color] || "#ffb21e"};--d:${(.35 + i * .14).toFixed(2)}s"><b>${o.n}</b><span>${esc(o.t.name)}</span><em>${total(o.t.id).toFixed(1)}%</em></div>`).join("")}</div>
         <div class="eg-hint">Type <b>${opts.map(o => o.n).join("</b> <b>")}</b> in chat <span class="eg-chat">you: <i class="eg-typed"></i><u></u></span></div>`;
