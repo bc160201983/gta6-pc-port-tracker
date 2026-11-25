@@ -617,6 +617,7 @@ function nextAlert(){
   const a = alertQ.shift(); if(!a){ alerting = false; return; }
   alerting = true;
   if(document.hidden){ setTimeout(nextAlert, 300); return; }
+  if(window.Segments?.onAir?.()){ alertQ.unshift(a); setTimeout(nextAlert, 1500); return; }   // hold alerts while a segment covers the screen
   if(a.type==="banner"){
     const m = $("mission"), fl = $("flash");
     m.className = "mission" + (a.blue?" blue":"") + (a.red?" red":""); fl.className = "flash" + (a.red?" red":"");

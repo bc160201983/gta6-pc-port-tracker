@@ -238,6 +238,17 @@ html.static #editBtn,html.static #testBtn,html.static #exportBtn,html.static .of
 .eng-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
 .eng-acts .note{font:12px "JetBrains Mono",monospace;color:var(--muted);margin-left:auto}
 .btn.yt{background:#ff0033;color:#fff;border-color:transparent}
+.live{padding:12px 12px 12px;margin-bottom:16px}
+.lv-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:4px 6px 12px}
+.lv-h b{font:700 12px "JetBrains Mono",monospace;letter-spacing:.18em;text-transform:uppercase}
+.lv-h .s{color:var(--muted);font-size:13px}
+.lv-h .sp{flex:1}
+.lv-dot{width:9px;height:9px;border-radius:50%;background:#ff2d55;animation:lvp 1.6s infinite}
+@keyframes lvp{0%{box-shadow:0 0 0 0 rgba(255,45,85,.6)}70%,100%{box-shadow:0 0 0 9px rgba(255,45,85,0)}}
+.fresh{font:600 12px "JetBrains Mono",monospace;color:var(--muted);letter-spacing:.03em}
+.fresh b{color:var(--ink)}
+.lv-frame{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#0a0512;border:1px solid var(--stroke)}
+.lv-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
 @media(max-width:900px){.eng{grid-template-columns:1fr 1fr}}
 </style>
 </head>
@@ -286,6 +297,14 @@ html.static #editBtn,html.static #testBtn,html.static #exportBtn,html.static .of
       <button class="btn" data-en="cta" data-m="like">Show like</button>
       <span class="note" id="enNote"></span>
     </div>
+  </section>
+
+  <section class="glass live" id="liveScene">
+    <div class="lv-h"><span class="lv-dot"></span><b>Live race scene</b><span class="s">the same view as the stream · a new segment every 2 minutes</span>
+      <span class="sp"></span><span class="fresh" id="fresh"></span>
+      <a class="btn yt" id="watchBtn" target="_blank" rel="noopener" hidden>▶ Watch live</a>
+      <a class="btn" href="stream.html" target="_blank" rel="noopener">Full screen ↗</a></div>
+    <div class="lv-frame"><iframe src="stream.html?cta=0" title="Live race scene" loading="lazy"></iframe></div>
   </section>
 
   <section class="teams" id="teams"></section>
@@ -558,9 +577,23 @@ function render(){
   if(!document.querySelector(".team")) buildTeams();
   renderTeams(); renderBuild(); renderBoard(); renderStream(); renderTicker(); toastNew();
   if(!document.activeElement?.matches("input[type=range]")) renderMilestones();
-  renderEngage();
+  renderEngage(); renderLiveHead();
   first = false;
 }
+
+/* ---- live scene header: how fresh the data is + a link to the live stream ---- */
+const PUBLISH_MIN = 10;   // publish.js --watch interval for the website
+function renderLiveHead(){
+  if(!state) return;
+  const st = state.stream || {}, h = (st.youtubeHandle || "").replace(/^@/, ""), wb = $("watchBtn");
+  const url = h ? `https://www.youtube.com/@${encodeURIComponent(h)}/live` : st.youtubeChannelId ? `https://www.youtube.com/channel/${encodeURIComponent(st.youtubeChannelId)}/live` : "";
+  wb.hidden = !url; if(url) wb.href = url;
+  const t = new Date(state.serverTime || state.updated);
+  if(!window.STATIC_DATA){ $("fresh").innerHTML = "<b>Live</b> · straight from the tracker"; return; }
+  const left = t.getTime() + PUBLISH_MIN*60e3 - Date.now();
+  $("fresh").innerHTML = `Updated <b>${ago(t)}</b> · ` + (left > 0 ? `next update in <b>${Math.floor(left/60e3)}:${String(Math.floor(left/1000)%60).padStart(2,"0")}</b>` : "next update any moment");
+}
+setInterval(renderLiveHead, 1000);
 
 /* ---- stream engagement (sub goal + call-outs) ---- */
 function renderEngage(){

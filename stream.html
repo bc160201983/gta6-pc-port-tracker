@@ -673,6 +673,7 @@ function nextAlert(){
   const a = alertQ.shift(); if(!a){ alerting = false; return; }
   alerting = true;
   if(document.hidden){ setTimeout(nextAlert, 300); return; }   // don't burn alerts nobody can see
+  if(window.Segments?.onAir?.()){ alertQ.unshift(a); setTimeout(nextAlert, 1500); return; }   // hold alerts while a segment covers the screen
   const t = team(a.team), card = document.querySelector(`.crew[data-id="${a.team}"]`);
   if(card){ card.classList.add("ping"); setTimeout(()=>card.classList.remove("ping"), 3000); }
   if(a.type==="banner"){
