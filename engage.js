@@ -306,6 +306,7 @@
   }
   function run(kind) {
     if (!S || !dom || busy || !MOMENTS[kind] || document.hidden) return;
+    if (window.Segments?.onAir?.()) { setTimeout(() => run(kind), 6000); return; }   // never on top of a broadcast segment
     busy = true; timers.forEach(clearTimeout); timers = [];
     dom.cta.className = "eg-cta " + kind; dom.cursor.style.opacity = 0;
     MOMENTS[kind]();
@@ -337,6 +338,6 @@
       else if (m.type === "test-goal") celebrate("goal", goalFor(subsNow() ?? 0));
       else if (m.type === "cta") { busy = false; run(m.moment || "sub"); }
     },
-    run, celebrate,
+    run, celebrate, busy: () => busy,
   };
 })();

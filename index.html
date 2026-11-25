@@ -12,7 +12,7 @@
 :root{
   --bg:#07060b; --bg2:#0d0b14; --glass:rgba(255,255,255,.045); --glass-hi:rgba(255,255,255,.08);
   --stroke:rgba(255,255,255,.09); --ink:#f4f1f8; --muted:#8d86a0; --dim:#5d576d;
-  --a:#ff3d8b; --b:#2fd4f0; --c:#ffb21e; --d:#a678ff; --e:#5b8cff; --f:#7be07b; --g:#ff6a3d; --h:#cfd6e6; --i:#ff9de2;
+  --a:#ff3d8b; --b:#2fd4f0; --c:#ffb21e; --cd:#a678ff; --ce:#5b8cff; --cf:#7be07b; --cg:#ff6a3d; --ch:#cfd6e6; --ci:#ff9de2;
   --open:#3ddc84; --merged:#a678ff; --closed:#ff5c69; --draft:#7d7891;
   --ease:cubic-bezier(.2,.8,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
   color-scheme:dark;
@@ -20,7 +20,7 @@
 :root[data-theme="light"]{
   --bg:#f5f2ee; --bg2:#ece7e1; --glass:rgba(255,255,255,.7); --glass-hi:rgba(255,255,255,.95);
   --stroke:rgba(20,10,30,.09); --ink:#140f1c; --muted:#6a6377; --dim:#a29bab;
-  --a:#e0206e; --b:#0f9bb6; --c:#d38400; --d:#7b4fe0; --e:#2f62d8; --f:#2f9d4a; --g:#d9481b; --h:#6b7487; --i:#c9479a; --open:#1f9d55; --merged:#7b4fe0; --closed:#d33545;
+  --a:#e0206e; --b:#0f9bb6; --c:#d38400; --cd:#7b4fe0; --ce:#2f62d8; --cf:#2f9d4a; --cg:#d9481b; --ch:#6b7487; --ci:#c9479a; --open:#1f9d55; --merged:#7b4fe0; --closed:#d33545;
   color-scheme:light;
 }
 *{box-sizing:border-box}
@@ -90,7 +90,7 @@ h2 .count{color:var(--dim)}
 .team .glow{position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,var(--tc),transparent 65%);opacity:.16;top:-120px;right:-90px;pointer-events:none;transition:opacity .6s}
 .team:hover .glow{opacity:.3}
 .team.ping{box-shadow:0 0 0 1px var(--tc),0 0 60px -10px var(--tc)}
-.a{--tc:var(--a)} .b{--tc:var(--b)} .c{--tc:var(--c)} .d{--tc:var(--d)} .e{--tc:var(--e)} .f{--tc:var(--f)} .g{--tc:var(--g)} .h{--tc:var(--h)} .i{--tc:var(--i)}
+.a{--tc:var(--a)} .b{--tc:var(--b)} .c{--tc:var(--c)} .d{--tc:var(--cd)} .e{--tc:var(--ce)} .f{--tc:var(--cf)} .g{--tc:var(--cg)} .h{--tc:var(--ch)} .i{--tc:var(--ci)}
 .thead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .tname{font:700 19px Unbounded,sans-serif;letter-spacing:-.02em}
 .ttag{font:12px "JetBrains Mono",monospace;color:var(--muted);margin-top:3px;display:flex;gap:6px;align-items:center}

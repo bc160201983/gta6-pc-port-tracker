@@ -14,7 +14,7 @@
 :root{
   --bg:#0a0512; --ink:#fff7f0; --muted:#bfaecf; --dim:#6f6184; --line:rgba(255,255,255,.09);
   --panel:rgba(17,8,30,.74);
-  --a:#ff3d8b; --b:#2fd4f0; --c:#ffb21e; --d:#a678ff; --e:#5b8cff; --f:#7be07b; --g:#ff6a3d; --h:#cfd6e6; --i:#ff9de2;
+  --a:#ff3d8b; --b:#2fd4f0; --c:#ffb21e; --cd:#a678ff; --ce:#5b8cff; --cf:#7be07b; --cg:#ff6a3d; --ch:#cfd6e6; --ci:#ff9de2;
   --gold:#ffd23f; --money:#7be07b; --red:#ff2d55;
   --open:#3ddc84; --merged:#a678ff; --closed:#ff5c69; --draft:#8a85a0;
   --ease:cubic-bezier(.2,.8,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
@@ -23,7 +23,7 @@
 *{box-sizing:border-box;margin:0}
 html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;cursor:none}
 body{color:var(--ink);font:20px/1.4 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-.a{--tc:var(--a)} .b{--tc:var(--b)} .c{--tc:var(--c)} .d{--tc:var(--d)} .e{--tc:var(--e)} .f{--tc:var(--f)} .g{--tc:var(--g)} .h{--tc:var(--h)} .i{--tc:var(--i)}
+.a{--tc:var(--a)} .b{--tc:var(--b)} .c{--tc:var(--c)} .d{--tc:var(--cd)} .e{--tc:var(--ce)} .f{--tc:var(--cf)} .g{--tc:var(--cg)} .h{--tc:var(--ch)} .i{--tc:var(--ci)}
 .anton{font-family:Anton,Impact,sans-serif;font-weight:400}
 #stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;overflow:hidden;background:var(--bg)}
 
@@ -372,6 +372,7 @@ body.nolive .offline{display:grid}
 </div>
 
 <script src="engage.js"></script>
+<script src="segments.js"></script>
 <script>
 const params = new URLSearchParams(location.search);
 if(params.get("static")) window.STATIC_DATA = params.get("static");   // preview a data snapshot
@@ -732,6 +733,7 @@ function render(){
   renderCrews(); renderFeed(); renderTicker(); detectAlerts();
   if(first) showScene(0); else refreshScene();
   window.Engage?.update(state);
+  window.Segments?.update(state);
   first = false;
 }
 function setLive(on){ $("onair").classList.toggle("off", !on); $("onairTxt").textContent = on ? "LIVE" : "OFFLINE"; document.body.classList.toggle("nolive", !on && !state); }
